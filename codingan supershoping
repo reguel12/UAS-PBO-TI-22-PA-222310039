@@ -1,0 +1,175 @@
+package supershoping;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Product {
+    String name;
+    double price;
+
+    public Product(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+}
+
+class Transaction {
+    ArrayList<Product> products;
+    double totalAmount;
+    String paymentMethod;
+
+    public Transaction(ArrayList<Product> products, double totalAmount, String paymentMethod) {
+        this.products = products;
+        this.totalAmount = totalAmount;
+        this.paymentMethod = paymentMethod;
+    }
+}
+
+class User {
+    String username;
+    String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+}
+
+class Report {
+    // Add methods for generating various reports
+    // For example, sales report, product inventory report, etc.
+}
+
+public class codingan {
+    static ArrayList<Product> productList = new ArrayList<>();
+    static ArrayList<Transaction> transactionList = new ArrayList<>();
+    static ArrayList<User> userList = new ArrayList<>();
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Dummy data for products
+        productList.add(new Product("Produk 1", 10000));
+        productList.add(new Product("Produk 2", 15000));
+
+        // Dummy data for users
+        userList.add(new User("admin", "admin123"));
+
+        // User authentication
+        System.out.print("masukan username: ");
+        String username = scanner.nextLine();
+        System.out.print("masukan password: ");
+        String password = scanner.nextLine();
+
+        if (authenticateUser(username, password)) {
+            System.out.println("Authentikasi sukses!");
+
+            while (true) {
+                System.out.println("=== SuperShop Management ===");
+                System.out.println("1. List Produk");
+                System.out.println("2. buat transaksi");
+                //System.out.println("3. liat laporan");
+                System.out.println("3. keluar");
+                System.out.print("masukan pilihan: ");
+
+                int choice = scanner.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        listProducts();
+                        break;
+
+                    case 2:
+                        makeTransaction();
+                        break;
+
+//                    case 3:
+//                        generateReports();
+//                        break;
+
+                    case 3:
+                        System.exit(0);
+
+                    default:
+                        System.out.println("pilihan salah. masukan pilihan yang benar");
+                }
+            }
+        } else {
+            System.out.println("Authentikasi. gagal...");
+        }
+    }
+
+    private static boolean authenticateUser(String username, String password) {
+        for (User user : userList) {
+            if (user.username.equals(username) && user.password.equals(password))
+            {
+          
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void listProducts() {
+        System.out.println("=== list produk ===");
+        for (Product product : productList) {
+            System.out.println(product.name + " - RP" + product.price);
+        }
+    }
+
+    private static void makeTransaction() {
+        ArrayList<Product> selectedProducts = new ArrayList<>();
+
+        System.out.println("=== buat transaksi ===");
+        while (true) {
+            listProducts();
+            System.out.print("tambahkan nama produk untuk dimasukan ke dalam transaksi (or 'done' to finish): ");
+            Scanner scanner = new Scanner(System.in);
+            String productName = scanner.nextLine();
+
+            if (productName.equalsIgnoreCase("done")) {
+                break;
+            }
+
+            Product selectedProduct = findProduct(productName);
+            if (selectedProduct != null) {
+                selectedProducts.add(selectedProduct);
+            } else {
+                System.out.println("Produk tidak di temukan. masukan nama produk yang benar.");
+            }
+        }
+
+        double totalAmount = calculateTotalAmount(selectedProducts);
+
+        System.out.print("masukan metode pembayaran: ");
+        Scanner scanner = new Scanner(System.in);
+        String paymentMethod = scanner.nextLine();
+
+        Transaction transaction = new Transaction(selectedProducts, totalAmount, paymentMethod);
+        transactionList.add(transaction);
+
+        System.out.println("transaksi berhasil!");
+    }
+
+    private static Product findProduct(String productName) {
+        for (Product product : productList) {
+            if (product.name.equalsIgnoreCase(productName)) {
+                return product;
+            }
+        }
+        return null;
+    }
+
+    private static double calculateTotalAmount(ArrayList<Product> products) {
+        double totalAmount = 0;
+        for (Product product : products) {
+            totalAmount += product.price;
+        }
+        return totalAmount;
+    }
+
+//    private static void generateReports() {
+//        // Placeholder for generating reports
+//        System.out.println("membuat laporan...");
+//    }
+}
